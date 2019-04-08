@@ -9,7 +9,7 @@ In the Functions folder is a script with all key functions written by Jack for p
 # LUAD_Read_V1.0
 The 'luadread_tcga_pancancer.R' has all the pre-processing scripts for TCGA PanCancer Atlas for each of the following data:
 1. Clinical
-2. 
+2. CNA (this data file is too big to be opened using Excel)
 
 
 

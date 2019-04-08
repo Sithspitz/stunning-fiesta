@@ -57,5 +57,38 @@ luad_tcga_pancancer_cna <- CNA3
 setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
 write.csv(luad_tcga_pancancer_cna, "luad_tcga_pancancer_cna.csv", row.names = F)
 rm(blankdf)
+setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
+
+
+
+## RNA-Seq ##
+# RSEM - RPKM EL
+RNAEL <- read.csv("data_RNA_Seq_v2_expression_median.csv", header = T)
+
+# Collate patients into a column called Patient.ID and values into "RNASeq_EL 
+RNAEL1 <- RNAEL %>% gather(contains("TCGA"), key = "Patient.ID", value = "RNASeq_EL")
+
+# RSEM - RPKM Z Scores
+RNAZ <- read.csv("data_RNA_Seq_v2_mRNA_median_Zscores.csv", header = T)
+
+#  Collate patients into a column called Patient.ID and values into "RNASeq_Z" 
+RNAZ1 <- RNAZ %>% gather(contains("TCGA"), key = "Patient.ID", value = "RNASeq_Z")
+
+# Merge
+RNA <- merge(RNAZ1, RNAEL1, by = c("Patient.ID", "Hugo_Symbol", "Entrez_Gene_Id"))
+
+# Fix factors/numerics 
+DontFactor <- c("RNASeq_Z", "RNASeq_EL")
+RNA1 <- nofactorthese(RNA, DontFactor)
+
+# Write csv
+luad_tcga_pancancer_rna <- RNA1
+setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
+write.csv(luad_tcga_pancancer_rna, "luad_tcga_pancancer_rna.csv", row.names = F)
+
+
+
+
+
 
 
