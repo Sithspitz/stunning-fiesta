@@ -85,10 +85,34 @@ RNA1 <- nofactorthese(RNA, DontFactor)
 luad_tcga_pancancer_rna <- RNA1
 setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
 write.csv(luad_tcga_pancancer_rna, "luad_tcga_pancancer_rna.csv", row.names = F)
+setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
 
 
+## Mutations ##
+mut <- read.csv("data_mutations_extended.csv", header = T)
 
+# Remove columns with NA or empty data
+mut1 <- mut %>% dplyr::select(-contains("Validation_Allele"))%>% dplyr::select(-contains("BAM_File")) %>%
+  dplyr::select(-matches("Score"))
+
+# Remove uneeded columns
+uneeded <- c("Entrez_Gene_Id", "Center", "NCBI_Build", "Strand",  "dbSNP_RS", "dbSNP_Val_Status",
+             "Matched_Norm_Sample_Barcode", "Match_Norm_Seq_Allele1", "Match_Norm_Seq_Allele2", "Tumor_Validation_Allele1",
+             "Tumor_Validation_Allele2", "Match_Norm_Validation_Allele1", "Match_Norm_Validation_Allele2", "Verification_Status",
+             "Validation_Status", "Mutation_Status", "Sequencing_Phase", "Sequence_Source", "Validation_Method", "Score",
+             "BAM_File", "Sequencer", "t_ref_count", "t_alt_count", "n_ref_count", "n_alt_count", "HGVSp",
+             "Transcript_ID", "RefSeq", "Codons", "Hotspot", "NCALLERS", "ALLELE_NUM", "PICK", "UNIPARC", "Feature",
+             "CONTEXT", "Gene", "HGNC_ID", "MERGESOURCE", "ExAC_AF_AMR", "DISTANCE", "SYMBOL_SOURCE", "Existing_variation",
+             "SYMBOL", "ExAC_AF_SAS", "VARIANT_CLASS", "AA_MAF", "HIGH_INF_POS", "GENE_PHENO", "ExAC_AF_AFR",
+             "ASN_MAF", "PHENO", "BIOTYPE", "AFR_MAF", "DOMAINS", "MOTIF_SCORE_CHANGE", "EA_MAF", "ExAC_AF_NFE",
+             "INTRON", "TREMBL", "AMR_MAF", "EAS_MAF", "CANONICAL", "DBVS", "all_effects", "ExAC_AF_EAS",
+             "GMAF", "MOTIF_NAME", "TSL", "SOMATIC", "MOTIF_POS", "SWISSPROT", "ExAC_AF_FIN", "EUR_MAF",
+             "Feature_type", "HGVS_OFFSET", "FILTER", "ENSP", "ExAC_AF",  "CENTERS", "CCDS", "EXON", "ExAC_AF_OTH",
+             "SAS_MAF", "Exon_Number", "MINIMISED", "PUBMED")
+mut2 <- droplevels(mut1[,!(names(mut1) %in% uneeded)])
+
+##### CONTINUE FROM HERE, THINK ABOUT REARRANGING THE ORDER OF COLUMNS FIRST PERHAPS ######
 
 
 
