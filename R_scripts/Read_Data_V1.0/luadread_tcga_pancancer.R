@@ -1,8 +1,11 @@
 ### Lung Adenocarcinoma PanCancer Atlas Read/Pre-proccessing ###
+# Key commands
 source("./R_scripts/Functions/functions.R")
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
+
 ## Clinical Read and Tidy ##
+
 clinical_pat <- read.csv("data_clinical.csv", header = T)
 
 # Remove uneeded columns
@@ -25,4 +28,18 @@ luad_tcga_pancancer_clinical <- clin3
 setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
 write.csv(luad_tcga_pancancer_clinical, "luad_tcga_pancancer_clinical.csv", row.names = F)
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
+
+
+## Copy Number Read and Tidy ##
+
+# Create a blank df to allocate memory to read the CNA .csv
+blankdf <- data.frame()[1:26000, ]
+CNA <- read.csv("data_CNA.csv", header = T)
+rm(blankdf)
+
+
+
+
+
+
 
