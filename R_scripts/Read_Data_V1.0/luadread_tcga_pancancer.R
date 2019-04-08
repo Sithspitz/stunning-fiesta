@@ -4,6 +4,7 @@ source("./R_scripts/Functions/functions.R")
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
 
+
 ## Clinical Read and Tidy ##
 
 clinical_pat <- read.csv("data_clinical.csv", header = T)
@@ -30,16 +31,31 @@ write.csv(luad_tcga_pancancer_clinical, "luad_tcga_pancancer_clinical.csv", row.
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
 
+
 ## Copy Number Read and Tidy ##
 
 # Create a blank df to allocate memory to read the CNA .csv
-blankdf <- data.frame()[1:26000, ]
+blankdf <- data.frame()[1:12000000, ]
 CNA <- read.csv("data_CNA.csv", header = T)
+
+# Collate patients into a column called "Patient.ID" and values into "CNA_NL" 
+## Correct strcture of the TCGA Patient ID by changing - to . and removing the last three characters from each element
+### Re-order columns
+CNA1 <- CNA %>% gather(contains("TCGA"), key = "Patient.ID", value = "CNA_NL")
+# ARCHIVE AS DONE THIS STEP ON EXCEL FOR THIS DATA: CNA1$Patient.ID <- gsub("-", "\\.", CNA1$Patient.ID)
+# ARCHIVE AS DONE THIS STEP ON EXCEL FOR THIS DATA: CNA1$Patient.ID <- gsub(".{3}$", "", CNA1$Patient.ID)
+CNA1 <- CNA1[,c(3,1,2,4)]
+
+# Fix factors/numerics
+DoFactor <- c("Patient.ID", "Entrez_Gene_Id")
+CNA2 <- factorthese(CNA1, DoFactor)
+NoFactor <- c("CNA_NL")
+CNA3 <- nofactorthese(CNA2, NoFactor)
+
+# Write csv
+luad_tcga_pancancer_cna <- CNA3
+setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
+write.csv(luad_tcga_pancancer_cna, "luad_tcga_pancancer_cna.csv", row.names = F)
 rm(blankdf)
-
-
-
-
-
 
 
