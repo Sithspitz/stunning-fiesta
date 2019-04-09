@@ -59,6 +59,92 @@ write.csv(MutNum, "mut_num_luad_tcga_pancancer.csv", row.names = F)
 
 
 
-# MUTATIONS WHICH RESULT IN A PROTEIN CHANGE?!?!
+# Most common variants in the TCGA #
+
+# Firstly take the variants I am interested in
+## Variant types as shown in 'levels' vector
+levels <- c("Missense_Mutation", "Nonsense_Mutation", "Nonstop_Mutation",
+            "In_Frame_Del", "In_Frame_Ins", "Frame_Shift_Del", "Frame_Shift_Ins",
+            "Splice_Site", "Splice_Region")
+var_subset <- subset(mut, Variant_Classification == levels, select = c(Patient.ID:PolyPhen))
+var_subset$class <- as.factor(paste(var_subset$Patient.ID, var_subset$Variant_Classification, 
+                                    sep = ","))
+var_subset$protein_change <- as.factor(paste(var_subset$Patient.ID, var_subset$HGVSp_Short,
+                                             sep = ","))
+var_subset$amino_acid_change <- as.factor(paste(var_subset$Patient.ID, var_subset$Amino_acids,
+                                                sep = ","))
+
+# Count indivual types of alteration, protein change and amino acid change
+var1 <- data.frame(parameter = character(),
+                   Number = double(),
+                   stringsAsFactors = F)
+var2 <- data.frame(parameter = character(),
+                   Number = double(),
+                   stringsAsFactors = F)
+var3 <- data.frame(parameter = character(),
+                   Number = double(),
+                   stringsAsFactors = F)
+
+c <- 1
+for(i in levels(var_subset$class)){
+  print(i)
+  work <- droplevels(subset(var_subset, class == i))
+  num <- nrow(work)
+  var1[c, "parameter"] <- i
+  var1[c, "Number"] <- num
+  c <- c + 1
+}
+
+c <- 1
+for(i in levels(var_subset$protein_change)){
+  print(i)
+  work <- droplevels(subset(var_subset, protein_change == i))
+  num <- nrow(work)
+  var2[c, "parameter"] <- i
+  var2[c, "Number"] <- num
+  c <- c + 1
+}
+
+c <- 1
+for(i in levels(var_subset$amino_acid_change)){
+  print(i)
+  work <- droplevels(subset(var_subset, amino_acid_change == i))
+  num <- nrow(work)
+  var3[c, "parameter"] <- i
+  var3[c, "Number"] <- num
+  c <- c + 1
+}
+
+# Seperate and spread variant class
+var1_1 <- separate(var1, parameter, c("Patient.ID", "Variant_Classification"), sep = ",")
+var1_2 <- spread(var1_1, key = "Variant_Classification", value = "Number")
+
+# Count total variant class 
+
+######### NOT SURE ANYTHING BELOW HERE IS WORKING
+######## OR IS EVEN NEEDED?!?!
+var1_2$Patient.ID <- as.factor(var1_2$Patient.ID)
+total1 <- data.frame(Patient.ID = character(),
+                    TotalMut = double(),
+                    stringsAsFactors = F)
+c <- 1
+for(i in levels(var1_2$Patient.ID)){
+  print(i)
+  work <- droplevels(subset(var1_2, Patient.ID == i))
+  Total <- sum(work$Number)
+  total1[c, "Patient.ID"] <- i
+  total1[c, "TotalMut"] <- Total
+  c <- c + 1 
+}
+
+
+
+# Similar to that:
+## Can use amino acid change, so G/D
+
+
+
+
+
 
 
