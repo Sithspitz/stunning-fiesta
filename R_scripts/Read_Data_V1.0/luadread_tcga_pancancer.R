@@ -112,7 +112,26 @@ uneeded <- c("Entrez_Gene_Id", "Center", "NCBI_Build", "Strand",  "dbSNP_RS", "d
              "SAS_MAF", "Exon_Number", "MINIMISED", "PUBMED")
 mut2 <- droplevels(mut1[,!(names(mut1) %in% uneeded)])
 
-##### CONTINUE FROM HERE, THINK ABOUT REARRANGING THE ORDER OF COLUMNS FIRST PERHAPS ######
+# Rearrange columns so IDs first
+mut3 <- mut2[,c(11,1:10,12:25)]
 
+# Fix factors/numerics and rearrange columns
+DontFactor <- c("Start_Position", "End_Position")
+mut4 <- nofactorthese(mut3, DontFactor)
+mut4$Patient.ID <- samptopat(mut4$Tumor_Sample_Barcode)
+mut4$Patient.ID <- gsub("-", "\\.", mut4$Patient.ID)
+mut4 <- mut4[,c(26, 1:25)]
+uneeded2 <- c("Tumor_Sample_Barcode")
+mut5 <- droplevels(mut4[,!(names(mut4) %in% uneeded2)])
+
+# Write CSV
+luad_tcga_pancancer_mut <- mut5
+setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
+write.csv(luad_tcga_pancancer_mut, "luad_tcga_pancancer_mut.csv", row.names = F)
+setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
+
+
+
+## Fusions ##
 
 
