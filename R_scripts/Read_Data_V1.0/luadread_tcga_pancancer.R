@@ -133,5 +133,23 @@ setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
 
 ## Fusions ##
+fus <- read.csv("data_fusions.csv", header = T)
 
+# Convert patient IDs and remove columns
+fus$Patient.ID <- samptopat(fus$Tumor_Sample_Barcode)
+fus1 <- fus[,c(10, 1:9)]
+fus1$Patient.ID <- gsub("-", "\\.", fus1$Patient.ID)
+uneeded <- c("Tumor_Sample_Barcode", "Entrez_Gene_Id", "Center", "DNA_support",
+             "RNA_support", "Method")
+fus2 <- droplevels(fus1[,!(names(fus1) %in% uneeded)])
+
+# Fix factors and numerics
+DontFactor <- c("")
+fus3 <- nofactorthese(fus2, DontFactor)
+
+# Write CSV
+luad_tcga_pancancer_fusion <- fus3
+setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
+write.csv(luad_tcga_pancancer_fusion, "luad_tcga_pancancer_fusion.csv", row.names = F)
+setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
