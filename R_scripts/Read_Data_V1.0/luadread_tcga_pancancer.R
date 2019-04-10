@@ -26,7 +26,7 @@ clin3 <- numericthese(clin2, DontFactor)
 # Change Patient IDs from - to . and write csv
 clin3$Patient.ID <- gsub("-", "\\.", clin3$Patient.ID)
 luad_tcga_pancancer_clinical <- clin3
-setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
+setwd("L:/Richard B/TCGA_data/Pancancer/processed_csv")
 write.csv(luad_tcga_pancancer_clinical, "luad_tcga_pancancer_clinical.csv", row.names = F)
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
@@ -54,7 +54,7 @@ CNA3 <- nofactorthese(CNA2, NoFactor)
 
 # Write csv
 luad_tcga_pancancer_cna <- CNA3
-setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
+setwd("L:/Richard B/TCGA_data/Pancancer/processed_csv")
 write.csv(luad_tcga_pancancer_cna, "luad_tcga_pancancer_cna.csv", row.names = F)
 rm(blankdf)
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
@@ -83,7 +83,7 @@ RNA1 <- nofactorthese(RNA, DontFactor)
 
 # Write csv
 luad_tcga_pancancer_rna <- RNA1
-setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
+setwd("L:/Richard B/TCGA_data/Pancancer/processed_csv")
 write.csv(luad_tcga_pancancer_rna, "luad_tcga_pancancer_rna.csv", row.names = F)
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
@@ -126,7 +126,7 @@ mut5 <- droplevels(mut4[,!(names(mut4) %in% uneeded2)])
 
 # Write CSV
 luad_tcga_pancancer_mut <- mut5
-setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
+setwd("L:/Richard B/TCGA_data/Pancancer/processed_csv")
 write.csv(luad_tcga_pancancer_mut, "luad_tcga_pancancer_mut.csv", row.names = F)
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
@@ -149,7 +149,7 @@ fus3 <- nofactorthese(fus2, DontFactor)
 
 # Write CSV
 luad_tcga_pancancer_fusion <- fus3
-setwd("L:/Richard B/R_WD/stunning-fiesta/Test_Output_WD")
+setwd("L:/Richard B/TCGA_data/Pancancer/processed_csv")
 write.csv(luad_tcga_pancancer_fusion, "luad_tcga_pancancer_fusion.csv", row.names = F)
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
