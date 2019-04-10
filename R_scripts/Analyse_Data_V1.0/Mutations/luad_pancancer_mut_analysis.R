@@ -1,10 +1,7 @@
 ### Lung Adenocarcinoma PanCancer Atlas Mutation Analysis ###
 source("./R_scripts/Functions/functions.R")
-# CHANGE TO CORRECT WD DIR setwd()
+setwd("L:/Richard B/TCGA_data/Pancancer/processed_csv")
 mut <- read.csv("luad_tcga_pancancer_mut.csv", header = T)
-
-# Fix factors/numerics
-## WRITE IF NEEDED
 
 
 
@@ -54,7 +51,7 @@ MutNum <- merge(patmut3, total, by = "Patient.ID")
 MutNum[is.na(MutNum)] <- 0
 
 # Write CSV
-## CHANGE SET WD()
+setwd("H:/My Documents/Analysis/2019/April 2019/temp/Mutation_TCGA_Pancancer_Analysis/Output")
 write.csv(MutNum, "mut_num_luad_tcga_pancancer.csv", row.names = F)
 
 
