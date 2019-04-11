@@ -1,6 +1,6 @@
 ### Lung Adenocarcinoma PanCancer Atlas Mutation Analysis ###
 source("./R_scripts/Functions/functions.R")
-setwd("L:/Richard B/TCGA_data/Pancancer/processed_csv")
+setwd("~/DataShare/Mut_TCGA_Temp/Mutation_TCGA_Pancancer_Analysis/Input")
 mut <- read.csv("luad_tcga_pancancer_mut.csv", header = T)
 
 
@@ -51,7 +51,7 @@ MutNum <- merge(patmut3, total, by = "Patient.ID")
 MutNum[is.na(MutNum)] <- 0
 
 # Write CSV
-setwd("H:/My Documents/Analysis/2019/April 2019/temp/Mutation_TCGA_Pancancer_Analysis/Output")
+setwd("~/DataShare/Mut_TCGA_Temp/Mutation_TCGA_Pancancer_Analysis/Output")
 write.csv(MutNum, "mut_num_luad_tcga_pancancer.csv", row.names = F)
 
 
@@ -59,17 +59,29 @@ write.csv(MutNum, "mut_num_luad_tcga_pancancer.csv", row.names = F)
 # Most common variants in the TCGA #
 
 # Firstly take the variants I am interested in
-## Variant types as shown in 'levels' vector
-levels <- c("Missense_Mutation", "Nonsense_Mutation", "Nonstop_Mutation",
-            "In_Frame_Del", "In_Frame_Ins", "Frame_Shift_Del", "Frame_Shift_Ins",
-            "Splice_Site", "Splice_Region")
-var_subset <- subset(mut, Variant_Classification == levels, select = c(Patient.ID:PolyPhen))
-var_subset$class <- as.factor(paste(var_subset$Patient.ID, var_subset$Variant_Classification, 
+## Remove the levels I don't care about using droplevels()
+Intermediate2 <- droplevels(subset(Intermediate, Variant_Classification != "RNA"))
+Intermediate2 <- droplevels(subset(Intermediate2, Variant_Classification != "Intron"))
+Intermediate2 <- droplevels(subset(Intermediate2, Variant_Classification != "3'UTR"))
+Intermediate2 <- droplevels(subset(Intermediate2, Variant_Classification != "5'UTR"))
+Intermediate2 <- droplevels(subset(Intermediate2, Variant_Classification != "5'Flank"))
+Intermediate2 <- droplevels(subset(Intermediate2, Variant_Classification != "3'Flank"))
+Intermediate2 <- droplevels(subset(Intermediate2, Variant_Classification != "Translation_Start_Site"))
+
+Intermediate3 <- Intermediate2
+Intermediate4 <- Intermediate2
+
+
+Intermediate2$class <- as.factor(paste(Intermediate2$Patient.ID, Intermediate2$Variant_Classification, 
                                     sep = ","))
-var_subset$protein_change <- as.factor(paste(var_subset$Patient.ID, var_subset$HGVSp_Short,
-                                             sep = ","))
-var_subset$amino_acid_change <- as.factor(paste(var_subset$Patient.ID, var_subset$Amino_acids,
+Intermediate3$protein_change <- as.factor(paste(Intermediate3$Patient.ID, Intermediate3$HGVSp_Short, 
+                                       sep = ","))
+Intermediate4$amino_acid_change <- as.factor(paste(Intermediate4$Patient.ID, Intermediate4$Amino_acids, 
                                                 sep = ","))
+
+
+
+
 
 # Count indivual types of alteration, protein change and amino acid change
 var1 <- data.frame(parameter = character(),
@@ -83,9 +95,9 @@ var3 <- data.frame(parameter = character(),
                    stringsAsFactors = F)
 
 c <- 1
-for(i in levels(var_subset$class)){
+for(i in levels(Intermediate2$class)){
   print(i)
-  work <- droplevels(subset(var_subset, class == i))
+  work <- droplevels(subset(Intermediate2, class == i))
   num <- nrow(work)
   var1[c, "parameter"] <- i
   var1[c, "Number"] <- num
@@ -93,9 +105,9 @@ for(i in levels(var_subset$class)){
 }
 
 c <- 1
-for(i in levels(var_subset$protein_change)){
+for(i in levels(Intermediate3$protein_change)){
   print(i)
-  work <- droplevels(subset(var_subset, protein_change == i))
+  work <- droplevels(subset(Intermediate3, protein_change == i))
   num <- nrow(work)
   var2[c, "parameter"] <- i
   var2[c, "Number"] <- num
@@ -103,9 +115,9 @@ for(i in levels(var_subset$protein_change)){
 }
 
 c <- 1
-for(i in levels(var_subset$amino_acid_change)){
+for(i in levels(Intermediate4$amino_acid_change)){
   print(i)
-  work <- droplevels(subset(var_subset, amino_acid_change == i))
+  work <- droplevels(subset(Intermediate4, amino_acid_change == i))
   num <- nrow(work)
   var3[c, "parameter"] <- i
   var3[c, "Number"] <- num
@@ -113,35 +125,36 @@ for(i in levels(var_subset$amino_acid_change)){
 }
 
 # Seperate and spread variant class
+## Remove NA
+### Write CSV
 var1_1 <- separate(var1, parameter, c("Patient.ID", "Variant_Classification"), sep = ",")
-var1_2 <- spread(var1_1, key = "Variant_Classification", value = "Number")
+varclass <- spread(var1_1, key = "Variant_Classification", value = "Number")
 
-# Count total variant class 
+varclass[is.na(varclass)] <- 0
 
-######### NOT SURE ANYTHING BELOW HERE IS WORKING
-######## OR IS EVEN NEEDED?!?!
-var1_2$Patient.ID <- as.factor(var1_2$Patient.ID)
-total1 <- data.frame(Patient.ID = character(),
-                    TotalMut = double(),
-                    stringsAsFactors = F)
-c <- 1
-for(i in levels(var1_2$Patient.ID)){
-  print(i)
-  work <- droplevels(subset(var1_2, Patient.ID == i))
-  Total <- sum(work$Number)
-  total1[c, "Patient.ID"] <- i
-  total1[c, "TotalMut"] <- Total
-  c <- c + 1 
-}
+setwd("~/DataShare/Mut_TCGA_Temp/Mutation_TCGA_Pancancer_Analysis/Output")
+write.csv(varclass, "mut_class_luad_tcga_pancancer.csv", row.names = F)
 
+# Seperate and spread protein changes
+## Remove NA
+### Write CSV - protein_change....csv is excel readable row-wise and protein_change...2.csv is not (column-wise), but same data
+var2_1 <- separate(var2, parameter, c("Patient.ID", "Variant_Classification"), sep = ",")
+proteinchange1 <- spread(var2_1, key = "Variant_Classification", value = "Number")
 
+proteinchange1[is.na(proteinchange1)] <- 0
 
-# Similar to that:
-## Can use amino acid change, so G/D
+setwd("~/DataShare/Mut_TCGA_Temp/Mutation_TCGA_Pancancer_Analysis/Output")
+write.csv(var2_1, "protein_change_luad_tcga_pancancer.csv", row.names = F)
+write.csv(proteinchange1, "protein_change_luad_tcga_pancancer2.csv", row.names = F)
 
+# Seperate and spread amino acid changes
+## Remove NA
+### Write CSV
+var3_1 <- separate(var3, parameter, c("Patient.ID", "Variant_Classification"), sep = ",")
+aminoacidchange1 <- spread(var3_1, key = "Variant_Classification", value = "Number")
 
+aminoacidchange1[is.na(aminoacidchange1)] <- 0
 
-
-
-
+setwd("~/DataShare/Mut_TCGA_Temp/Mutation_TCGA_Pancancer_Analysis/Output")
+write.csv(aminoacidchange1, "amino_acid_change_luad_tcga_pancancer.csv", row.names = F)
 
