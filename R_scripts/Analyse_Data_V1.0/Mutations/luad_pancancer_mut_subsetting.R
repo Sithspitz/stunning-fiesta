@@ -6,6 +6,8 @@ mut <- read.csv("luad_tcga_pancancer_mut.csv", header = T)
 # Seperate - subset anything that isn't a "Silent mutation"
 Intermediate <- droplevels(subset(mut, Variant_Classification != "Silent"))
 
+
+
 # Subset KRAS, STK11 and KRAS/STK11 untidy #
 MutChanges1 <- subset(Intermediate, Hugo_Symbol == "KRAS" | Hugo_Symbol == "STK11")
 setwd("~/DataShare/TCGA_Mut_Analysis_Temporary/Mutation_TCGA_Pancancer_Analysis/Subset")
@@ -33,3 +35,14 @@ for(i in levels(tidy2$Patient.ID)){
 }
 
 write.csv(loop_output, "KRAS_STK11_plus_dbl_tidy.csv", row.names = F)
+
+
+
+# Subset any other mutations am interested in #
+
+# ATM below (for example)
+ATM_sub1 <- subset(Intermediate, Hugo_Symbol == "ATM")
+ATM_sub2 <- ATM_sub1[, c("Patient.ID", "Hugo_Symbol")] %>% droplevels()
+ATM_sub3 <- ATM_sub2[!duplicated(ATM_sub2), ]
+write.csv(ATM_sub3, "ATM_mut_tidy.csv", row.names = F)
+
