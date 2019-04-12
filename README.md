@@ -10,7 +10,16 @@ In the Functions folder is a script with all key functions written by Jack for p
 The 'luadread_tcga_pancancer.R' has all the pre-processing scripts for TCGA PanCancer Atlas for each of the following data:
 1. Clinical
 2. CNA (this data file is too big to be opened using Excel)
+3. RNA-Seq - both median RPKM values and z-scores collated into one file (also too big to be opened in Excel)
+4. Mutations
+5. Fusions
 
+# Analyse_Data_V1.0/Mutations
+The 'luad_pancancer_mut_analysis.R' script has the following analyses which were done in April 2019:
+1. Rough types and number of total mutations/patient
+2. Detailed type of mutation
+3. Protein change positions
+4. Amino acid changes
 
 
 # Test_Output_WD
