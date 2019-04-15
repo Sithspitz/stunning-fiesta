@@ -63,47 +63,26 @@ setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
 
 ## RNA-Seq ##
 # RSEM - RPKM EL
-RNAEL1 <- read.csv("data_RNA_Seq_v2_expression_median.csv", header = T)
+RNAEL <- read.csv("data_RNA_Seq_v2_expression_median.csv", header = T)
 
-# Remove patients with NA
-## Generally fix NA
-RNAEL1[RNAEL1 == "#DIV/0!" | RNAEL1 == "NaN" | RNAEL1 == "#N/A" | RNAEL1 == "#VALUE!"] <- NA
-
-# Keeps columns where NA is = 0
-RNAEL2 <- RNAEL1[,colMeans(is.na(RNAEL1)) == 0]
-
-# Convert all columns but Hugo_Symbol to numerics
-Leave <- c("Hugo_Symbol")
-selections <- !names(RNAEL2) %in% Leave
-RNAEL2[,selections] <- as.numeric(as.character(unlist(RNAEL2[,selections])))
-RNAEL3 <- droplevels(RNAEL2)
-
-# Collate patients into a column called Patient.ID and values into 'RNASeqEL'
-RNAEL4 <- RNAEL3 %>% gather(contains("TCGA"), key = "Patient.ID", value = "RNASeqEL")
-
-# Factor the columns
-NoFactor <- c("RNASeqEL")
-RNAEL5 <- droplevels(nofactorthese(RNAEL4, NoFactor))
-
-# Arrange into "DataType"
-RNAEL6 <- RNAEL5 %>% gather(contains("RNASeqEL"), key = "DataType", value = "Value")
-
+# Collate patients into a column called Patient.ID and values into "RNASeq_EL 
+RNAEL1 <- RNAEL %>% gather(contains("TCGA"), key = "Patient.ID", value = "RNASeq_EL")
 
 # RSEM - RPKM Z Scores
-RNAZ1 <- read.csv("data_RNA_Seq_v2_mRNA_median_Zscores.csv", header = T)
+RNAZ <- read.csv("data_RNA_Seq_v2_mRNA_median_Zscores.csv", header = T)
 
-# Collate patients into a column called Patient.ID and values into 'RNASeqEL'
-RNAZ2 <- RNAZ1 %>% gather(contains("TCGA"), key = "Patient.ID", value = "RNASeqZScore")
+#  Collate patients into a column called Patient.ID and values into "RNASeq_Z" 
+RNAZ1 <- RNAZ %>% gather(contains("TCGA"), key = "Patient.ID", value = "RNASeq_Z")
 
-# Factor the columns
-NoFactor <- c("RNASeqZScore")
-RNAZ3 <- droplevels(nofactorthese(RNAZ2, NoFactor))
+# Merge
+RNA <- merge(RNAZ1, RNAEL1, by = c("Patient.ID", "Hugo_Symbol", "Entrez_Gene_Id"))
 
-# Arrange into "DataType"
-RNAZ4 <- RNAZ3 %>% gather(contains("RNASeqZScore"), key = "DataType", value = "Value")
+# Fix factors/numerics 
+DontFactor <- c("RNASeq_Z", "RNASeq_EL")
+RNA1 <- nofactorthese(RNA, DontFactor)
 
-# Merge (rbind() here) and Write
-luad_tcga_pancancer_rna <- rbind(RNAZ4, RNAEL6)
+# Write csv
+luad_tcga_pancancer_rna <- RNA1
 setwd("L:/Richard B/TCGA_data/Pancancer/processed_csv")
 write.csv(luad_tcga_pancancer_rna, "luad_tcga_pancancer_rna.csv", row.names = F)
 setwd("L:/Richard B/TCGA_data/Pancancer/raw_csv")
