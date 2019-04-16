@@ -147,9 +147,22 @@ CalGeneMeanMicroarrayz <- function(df, genecol){
 }
 
 # Calculate gene means RNA-Seq z-scores
-CalGeneMeanRNASeqz <- function(df, genecol){
+CalGeneMeanRNASeqZScore <- function(df, genecol){
   genes <-    df[eval(substitute(genecol), df) == T, ]
-  genes1 <- droplevels(subset(genes, DataType == "RNASeq_Z"))
+  genes1 <- droplevels(subset(genes, DataType == "RNASeqZScore"))
+  GeneScore <- dcast(genes1, Hugo_Symbol ~ Patient.ID, value.var = "Value")
+  GeneMean <- colMeans(GeneScore[-1], na.rm = T)
+  GeneData <- melt(GeneMean)
+  GeneData1 <- cbind(rownames(GeneData), data.frame(GeneData, row.names = NULL))
+  colnames(GeneData1)[colnames(GeneData1) == "rownames(GeneData)"] <- "Patient.ID"
+  GeneData2 <- GeneData1
+  return(GeneData2)
+}
+
+# Calculate gene means RNA-Seq EL
+CalGeneMeanRNASeqEL <- function(df, genecol){
+  genes <-    df[eval(substitute(genecol), df) == T, ]
+  genes1 <- droplevels(subset(genes, DataType == "RNASeqEL"))
   GeneScore <- dcast(genes1, Hugo_Symbol ~ Patient.ID, value.var = "Value")
   GeneMean <- colMeans(GeneScore[-1], na.rm = T)
   GeneData <- melt(GeneMean)
