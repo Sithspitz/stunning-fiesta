@@ -8,6 +8,32 @@ Intermediate <- droplevels(subset(mut, Variant_Classification != "Silent"))
 
 
 
+# Master Subsetting Loop Tidy - MT vs Other #
+
+## Groups into which MT they have, or double MT vs others without MTs ##
+### No silent MT included ###
+#### Being used for STK11 and KRAS here, but can be changed ####
+setwd("~/DataShare/TCGA_Mut_Analysis_Temporary/Mutation_TCGA_Pancancer_Analysis/Subset")
+output <- data.frame(stringsAsFactors = F)
+
+c <- 1
+for(i in levels(Intermediate$Patient.ID)){
+  print(paste0("working on: ", i))
+  work <- droplevels(subset(Intermediate, Patient.ID == i))
+  work$Hugo_Symbol <- as.factor(work$Hugo_Symbol)
+  output[c, "Patient.ID"] <- i
+  output[c, "Mutation_Status"] <- ifelse((length(is.na(levels(work$Hugo_Symbol)[levels(work$Hugo_Symbol) %in% "STK11"])) != 0 &
+                                            length(is.na(levels(work$Hugo_Symbol)[levels(work$Hugo_Symbol) %in% "KRAS"])) != 0), "Double_Mut",
+                                         ifelse((length(is.na(levels(work$Hugo_Symbol)[levels(work$Hugo_Symbol) %in% "STK11"])) == 0 &
+                                                   length(is.na(levels(work$Hugo_Symbol)[levels(work$Hugo_Symbol) %in% "KRAS"])) != 0), "KRAS_Mut",
+                                                ifelse((length(is.na(levels(work$Hugo_Symbol)[levels(work$Hugo_Symbol) %in% "STK11"])) != 0 &
+                                                          length(is.na(levels(work$Hugo_Symbol)[levels(work$Hugo_Symbol) %in% "KRAS"])) == 0), "STK11_Mut", "Other_Mut")))
+  c <- c + 1}
+
+write.csv(output, "KRAS_STK11_plus_dbl_tidy_vs_other.csv", row.names = F)
+
+
+
 # Subset KRAS, STK11 and KRAS/STK11 untidy #
 MutChanges1 <- subset(Intermediate, Hugo_Symbol == "KRAS" | Hugo_Symbol == "STK11")
 setwd("~/DataShare/TCGA_Mut_Analysis_Temporary/Mutation_TCGA_Pancancer_Analysis/Subset")
@@ -38,7 +64,7 @@ write.csv(loop_output, "KRAS_STK11_plus_dbl_tidy.csv", row.names = F)
 
 
 
-# Subset any other mutations am interested in #
+# Basic subset any other mutations am interested in #
 
 # ATM below (for example)
 ATM_sub1 <- subset(Intermediate, Hugo_Symbol == "ATM")
