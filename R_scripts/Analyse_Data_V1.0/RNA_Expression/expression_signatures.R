@@ -2,7 +2,7 @@
 ## Should be adopted dependent on the analysis in question ##
 source("./R_scripts/Functions/functions.R")
 source("./R_scripts/Functions/GeneSets.R")
-setwd("~/DataShare/TCGA_RNA_Analysis/Testing/")
+setwd("~/DataShare/TCGA_RNA_Analysis/Input/")
 rna <- read.csv("luad_tcga_pancancer_rna.csv", header = T)
 
 
@@ -132,7 +132,8 @@ clusterRows <- rainbow(length(unique(mycl)))
 myClusterSideBar <- clusterRows[mycl]
 my_palette <- colorRampPalette(c("blue", "white", "red"))(n = 299)
 
-cairo_pdf("./total_tcga_pancancer_immune_signature.pdf")
+setwd("~/DataShare/TCGA_RNA_Analysis/Output/")
+cairo_pdf("./cytotoxic_immune_signature.pdf")
 heatmap.2(xx,
           Rowv = F,
           Colv = as.dendrogram(hr),
