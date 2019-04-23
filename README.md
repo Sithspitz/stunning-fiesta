@@ -24,5 +24,3 @@ The 'luad_pancancer_mut_analysis.R' script has the following analyses which were
 The 'luad_pancancer_mut_subsetting.R' script was used in April 2019:
 Used to subset predominatly KRAS single, STK11 single and KRAS/STK11 double mutation patients.
 
-# Test_Output_WD
-This WD has some test versions of processing and exported data during script writing. 
