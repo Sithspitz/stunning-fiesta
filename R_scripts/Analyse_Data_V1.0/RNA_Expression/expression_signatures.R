@@ -132,10 +132,11 @@ clusterRows <- rainbow(length(unique(mycl)))
 myClusterSideBar <- clusterRows[mycl]
 my_palette <- colorRampPalette(c("blue", "white", "red"))(n = 299)
 
-cairo_pdf("./heatmap_1.pdf")
+cairo_pdf("./total_tcga_pancancer_immune_signature.pdf")
 heatmap.2(xx,
-          #Rowv = NA,
+          Rowv = F,
           Colv = as.dendrogram(hr),
+          dendrogram = "column",
           #dendrogram = "col",
           scale = "row",
           col = my_palette,

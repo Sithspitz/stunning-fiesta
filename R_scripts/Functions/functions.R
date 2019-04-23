@@ -34,6 +34,15 @@ writeCsvD <- function(df){
   fn <- deparse(substitute(df))
   write.csv(df, file = paste0("L:/Richard B/TCGA_data/Pancancer/raw_csv",fn,".csv"), row.names = F)}
 
+# Open WD in new explorer window
+opendir <- function(dir = getwd()){
+  if (.Platform['OS.type'] == "windows"){
+    shell.exec(dir)
+  } else {
+    system(paste(Sys.getenv("R_BROWSER"), dir))
+  }
+}
+
 # Remove duplicate rows
 deduplicate <- function(df){
   df1 <- df[!duplicated(df),]
