@@ -16,7 +16,7 @@ mut <- read.csv("KRAS_STK11_plus_dbl_tidy_vs_other.csv", header = T)
 # Droplevels !Other_Mut #
 ## Gives just KRAS, STK11 and double MT ##
 m1 <- merge(rna, mut, by = "Patient.ID")
-Intermediate <- droplevels(subset(m1, Mutation_status != "Other_Mut"))
+Intermediate <- droplevels(subset(m1, Mutation_Status != "Other_Mut"))
 
 # Remove Entrez_Gene_Id #
 Intermediate2 <- Intermediate
