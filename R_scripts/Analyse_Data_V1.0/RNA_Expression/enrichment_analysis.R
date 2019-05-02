@@ -41,6 +41,16 @@ s2_enriched_1 <- read.csv("test_gene_set_s2_enriched.csv", header = T, row.names
 s2_enriched_2 <- data.matrix(s2_enriched_1)
 
 s2_enriched_output <- gsva(s2_enriched_2, gmt_gene_set, method = "gsva")
+s2_enriched_output_ssgsea <- gsva(s2_enriched_2, gmt_gene_set, method = "ssgsea")
+
+## This is the S2 high and S3 low gene set enriched example ##
+
+s2_hi_s3_lo_1 <- read.csv("test_gene_set_s2_enriched_s3_low.csv", header = T, row.names = 1)
+s2_hi_s3_lo_1 <- data.matrix(s2_hi_s3_lo_1)
+
+s2_hi_s3_lo_output <- gsva(s2_hi_s3_lo_11, gmt_gene_set, method = "gsva")
+s2_hi_s3_lo_output_ssgsea <- gsva(s2_hi_s3_lo_1, gmt_gene_set, method = "ssgsea")
+
 
 #### FINISHED END OF LAST WEEK BUT WHAT DO THESE VALUES ACTUALLY MEAN? 
 #### AND WHAT ON EARTH DO I DO NEXT...?
