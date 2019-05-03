@@ -7,18 +7,22 @@ source("./R_scripts/Functions/functions.R")
 
 setwd("~/DataShare/TCGA_RNA_Analysis/Input/")
 rna <- read.csv("luad_tcga_pancancer_rna.csv", header = T)
-mut <- read.csv("Mut_tidy_vs_other.csv", header = T)
+mut <- read.csv("KRAS_STK11_plus_dbl_tidy_vs_other.csv", header = T)
 
 
-# Merge and clean up Entrez Ids
+# Droplevels !Other_Mut #
+## Gives just KRAS, STK11 and double MT ##
 m1 <- merge(rna, mut, by = "Patient.ID")
-Intermediate2 <- m1
+Intermediate <- droplevels(subset(m1, Mutation_Status != "Other_Mut"))
+
+# Remove Entrez_Gene_Id #
+Intermediate2 <- Intermediate
 Intermediate2$Entrez_Gene_Id <- NULL 
 
-# Droplevels RNASeqZScore and remove the datatype column
+# Droplevels RNASeqZScore #
+## Gives just the non-zscore RSEM values ##
 Intermediate3 <- droplevels(subset(Intermediate2, DataType == "RNASeqEL"))
-Intermediate4 <- Intermediate3
-Intermediate4$DataType <- NULL
+
 
 
 
