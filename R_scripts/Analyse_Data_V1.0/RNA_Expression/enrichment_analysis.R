@@ -1,11 +1,8 @@
 ### Lung Adenocarcinoma PanCancer Atlas RNA Enrichment ###
 ## Should be adopted dependent on the analysis in question ##
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
-  install.packages("BiocManager") } else { 
-    (BiocManager::install("GSVA", version = "3.8")) }
-library("GSVA")
-library("GSEABase")
-library("Biobase", "genefilter", "limma", "RColorBrewer")
+mypackages <- c("GSEABase", "GSVA", "Biobase", "genefilter",
+                "limma", "RColorBrewer", "GSVAdata")
+lapply(mypackages, library, character.only = T)
 source("./R_scripts/Functions/functions.R")
 
 setwd("~/DataShare/TCGA_RNA_Analysis/Input/")
