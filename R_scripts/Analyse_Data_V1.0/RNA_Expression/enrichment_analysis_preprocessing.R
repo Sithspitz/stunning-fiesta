@@ -52,7 +52,7 @@ dropped_WT <- WT_extra[!duplicated(WT_extra$extra), ]
 dropped_Mut$extra <- NULL
 dropped_WT$extra <- NULL
 
-# Recast and export the total MT vs Other MT Data
+# Recast, transpose and export the total MT vs Other MT Data
 setwd("~/DataShare/TCGA_RNA_Analysis/Input/gsva_correct_format/")
 
 mutant_expression_data <- recast(dropped_Mut, Patient.ID ~ Hugo_Symbol, id.var = 1:2)
@@ -61,6 +61,13 @@ mutant_expression_data$Var.2 <- NULL
 no_mutation_expression_data <- recast(dropped_WT, Patient.ID ~ Hugo_Symbol, id.var = 1:2)
 no_mutation_expression_data$Var.2 <- NULL
 
-write.csv(mutant_expression_data, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
-write.csv(no_mutation_expression_data, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+mutant_expression_data_transposed <- t(mutant_expression_data)
+colnames(mutant_expression_data_transposed) <- mutant_expression_data_transposed[1, ]
+mutant_expression_data_transposed <- mutant_expression_data_transposed[-1, ]
 
+no_mutation_expression_data_transposed <- t(no_mutation_expression_data)
+colnames(no_mutation_expression_data_transposed) <- no_mutation_expression_data_transposed[1, ]
+no_mutation_expression_data_transposed <- no_mutation_expression_data_transposed[-1, ]
+
+write.csv(mutant_expression_data_transposed, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(no_mutation_expression_data_transposed, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
