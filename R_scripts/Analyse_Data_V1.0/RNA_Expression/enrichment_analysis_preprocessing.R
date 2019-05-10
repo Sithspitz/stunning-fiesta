@@ -1,16 +1,11 @@
-#### Lung Adenocarcinoma PanCancer Atlas RNA Enrichment ####
-### Should be adopted dependent on the analysis in question ###
-
+#### Lung Adenocarcinoma PanCancer Atlas RNA Enrichment Pre-Processing ####
+### Is the scripts from 'enrichment_analysis.R' but on their own ###
 mypackages <- c("GSEABase", "GSVA", "Biobase", "genefilter",
                 "limma", "RColorBrewer", "GSVAdata")
 lapply(mypackages, library, character.only = T)
 source("./R_scripts/Functions/functions.R")
 
-
-
-### Data Processing Stages Pre-Enrichment Analysis ###
-## To align RNA expression data and MTs and get into a format for GSVA ##
-# Can skip this section and load the data later on in 'Enrichment Analysis' section #
+## Preprocessing the total MT vs total other_MT datasets ##
 
 setwd("~/DataShare/TCGA_RNA_Analysis/Input/")
 rna <- read.csv("luad_tcga_pancancer_rna.csv", header = T)
@@ -68,13 +63,4 @@ no_mutation_expression_data$Var.2 <- NULL
 
 write.csv(mutant_expression_data, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
 write.csv(no_mutation_expression_data, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
-
-
-
-### Enrichment Analysis ###
-setwd("~/DataShare/TCGA_RNA_Analysis/Input/gsva_correct_format/")
-
-
-
-
 
