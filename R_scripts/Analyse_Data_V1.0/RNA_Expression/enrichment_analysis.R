@@ -34,7 +34,12 @@ my_WT_subset2$Mutation_Status <- NULL
 
 # Tidyr idea
 my_Mut_subset3 <- my_Mut_subset2
+my_factored_MT_subset <- my_Mut_subset3
 
+melted <- melt(my_Mut_subset3, id.vars = c("Patient.ID"))
+t2 <- dcast(my_Mut_subset3, Patient.ID ~ Value, value.var = "Value")
+
+write.csv(t2, "test_dcast_output_2.csv")
 
 t2 <- dcast(my_Mut_subset3, Patient.ID ~ Hugo_Symbol, value.var = "Value")
 
