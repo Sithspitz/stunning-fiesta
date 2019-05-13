@@ -24,3 +24,8 @@ The 'luad_pancancer_mut_analysis.R' script has the following analyses which were
 The 'luad_pancancer_mut_subsetting.R' script was used in April 2019:
 Used to subset predominatly KRAS single, STK11 single and KRAS/STK11 double mutation patients.
 
+# Gene_Sets/Cell_Type_Geneset.csv
+Contains the base immune gene expression signature genes and paper references.
+Immunity 2013 paper - https://doi.org/10.1016/j.immuni.2013.10.003
+PLoS 2017 paper - https://doi.org/10.1371/journal.pone.0181868
+CCR 2017 paper - 10.1158/1078-0432.CCR-17-0162

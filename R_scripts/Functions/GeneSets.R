@@ -6,7 +6,7 @@ source("./R_scripts/Functions/functions.R")
 # Import Pre-made gene sets #
 
 # All .csv files in the directory
-predir <- c("./R_scripts/Gene_Sets/")
+predir <- c("./R_scripts/Gene_Sets/csv_format/")
 setwd(predir)
 temp <- list.files(pattern="*.csv")
 list2env(

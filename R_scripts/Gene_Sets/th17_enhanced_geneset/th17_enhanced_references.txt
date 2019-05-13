@@ -1,0 +1,5 @@
+References:
+
+For majority of the signature: https://doi.org/10.1371/journal.pone.0181868 
+
+For IL-17RA: https://doi.org/10.1016/j.immuni.2013.10.003
