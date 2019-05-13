@@ -57,47 +57,17 @@ dropped_WT <- WT_extra[!duplicated(WT_extra$extra), ]
 dropped_Mut$extra <- NULL
 dropped_WT$extra <- NULL
 
-# Recast, transpose and export the total MT vs Other MT Data
+# Recast, remove the uneeded first row and export the total MT vs Other MT Data
 setwd("~/DataShare/TCGA_RNA_Analysis/Input/gsva_correct_format/")
 
-mutant_expression_data <- recast(dropped_Mut, Patient.ID ~ Hugo_Symbol, id.var = 1:2)
-mutant_expression_data$Var.2 <- NULL
+mutant_expression_data <- recast(dropped_Mut, Hugo_Symbol ~ Patient.ID, id.var = 1:2)
+mutant_expression_data <- mutant_expression_data[-1, ]
 
-no_mutation_expression_data <- recast(dropped_WT, Patient.ID ~ Hugo_Symbol, id.var = 1:2)
-no_mutation_expression_data$Var.2 <- NULL
+no_mutation_expression_data <- recast(dropped_WT, Hugo_Symbol ~ Patient.ID, id.var = 1:2)
+no_mutation_expression_data <- no_mutation_expression_data[-1, ]
 
-
-###### WHAT I NEED TO DO!!!!!
-### SO TO TRANSPOSE THE DATA INTO THE CORRECT FORMAT I NEED AN EXTRA COLUMN OR ROW?!?!
-
-
-mutant_expression_data_2 <- mutant_expression_data
-
-
-rownames_to_column(mutant_expression_data_2)
-
-add_column(mutant_expression_data_2, .before = "A1BG")
-add_row(mutant_expression_data_2, .before = 1)
-
-
-
- mutant_expression_data_2 <- rbind(paste(colnames(mutant_expression_data_2)))
-write.csv(mutant_expression_data_2, "yoyo213hjifds.csv", row.names = F)
-
-write.csv(mutant_expression_data_transposed, "heatmag.csv", row.names = F)
-
-
-
-mutant_expression_data_transposed <- t(mutant_expression_data_2)
-colnames(mutant_expression_data_transposed) <- mutant_expression_data_transposed[1, ]
-mutant_expression_data_transposed <- mutant_expression_data_transposed[-1, ]
-
-no_mutation_expression_data_transposed <- t(no_mutation_expression_data)
-colnames(no_mutation_expression_data_transposed) <- no_mutation_expression_data_transposed[1, ]
-no_mutation_expression_data_transposed <- no_mutation_expression_data_transposed[-1, ]
-
-write.csv(mutant_expression_data_transposed, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
-write.csv(no_mutation_expression_data_transposed, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(mutant_expression_data, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(no_mutation_expression_data, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
 
 
 
@@ -106,16 +76,3 @@ setwd("~/DataShare/TCGA_RNA_Analysis/Input/gsva_correct_format/")
 
 no_MT_data <- read.csv("total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", header = T)
 MT_data <- read.csv("total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", header = F)
-
-
-
-
-
-testing123 <- t(MT_data)
-colnames(testing123) <- testing123[1, ]
-testing123 <- testing123[-1, ]
-
-
-
-write.csv(testing123, "test_2_data.csv", row.names = F)
-

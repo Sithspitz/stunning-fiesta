@@ -5,7 +5,11 @@ mypackages <- c("GSEABase", "GSVA", "Biobase", "genefilter",
 lapply(mypackages, library, character.only = T)
 source("./R_scripts/Functions/functions.R")
 
-## Preprocessing the total MT vs total other_MT datasets ##
+
+
+### Data Processing Stages Pre-Enrichment Analysis ###
+## To align RNA expression data and MTs and get into a format for GSVA ##
+# Can skip this section and load the data later on in 'Enrichment Analysis' section #
 
 setwd("~/DataShare/TCGA_RNA_Analysis/Input/")
 rna <- read.csv("luad_tcga_pancancer_rna.csv", header = T)
@@ -52,22 +56,14 @@ dropped_WT <- WT_extra[!duplicated(WT_extra$extra), ]
 dropped_Mut$extra <- NULL
 dropped_WT$extra <- NULL
 
-# Recast, transpose and export the total MT vs Other MT Data
+# Recast, remove the uneeded first row and export the total MT vs Other MT Data
 setwd("~/DataShare/TCGA_RNA_Analysis/Input/gsva_correct_format/")
 
-mutant_expression_data <- recast(dropped_Mut, Patient.ID ~ Hugo_Symbol, id.var = 1:2)
-mutant_expression_data$Var.2 <- NULL
+mutant_expression_data <- recast(dropped_Mut, Hugo_Symbol ~ Patient.ID, id.var = 1:2)
+mutant_expression_data <- mutant_expression_data[-1, ]
 
-no_mutation_expression_data <- recast(dropped_WT, Patient.ID ~ Hugo_Symbol, id.var = 1:2)
-no_mutation_expression_data$Var.2 <- NULL
+no_mutation_expression_data <- recast(dropped_WT, Hugo_Symbol ~ Patient.ID, id.var = 1:2)
+no_mutation_expression_data <- no_mutation_expression_data[-1, ]
 
-mutant_expression_data_transposed <- t(mutant_expression_data)
-colnames(mutant_expression_data_transposed) <- mutant_expression_data_transposed[1, ]
-mutant_expression_data_transposed <- mutant_expression_data_transposed[-1, ]
-
-no_mutation_expression_data_transposed <- t(no_mutation_expression_data)
-colnames(no_mutation_expression_data_transposed) <- no_mutation_expression_data_transposed[1, ]
-no_mutation_expression_data_transposed <- no_mutation_expression_data_transposed[-1, ]
-
-write.csv(mutant_expression_data_transposed, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
-write.csv(no_mutation_expression_data_transposed, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(mutant_expression_data, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(no_mutation_expression_data, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
