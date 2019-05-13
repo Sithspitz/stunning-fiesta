@@ -57,22 +57,55 @@ dropped_WT <- WT_extra[!duplicated(WT_extra$extra), ]
 dropped_Mut$extra <- NULL
 dropped_WT$extra <- NULL
 
-# Recast, remove the uneeded first row and export the total MT vs Other MT Data
+# Recast, remove the uneeded first row and the 'Hugo_Symbol' label 
+# Export the total MT vs Other MT Data
 setwd("~/DataShare/TCGA_RNA_Analysis/Input/gsva_correct_format/")
 
 mutant_expression_data <- recast(dropped_Mut, Hugo_Symbol ~ Patient.ID, id.var = 1:2)
 mutant_expression_data <- mutant_expression_data[-1, ]
+removed_mutation_expression_data <- mutant_expression_data
+colnames(removed_mutation_expression_data)[which(names(removed_mutation_expression_data)
+                                                 == "Hugo_Symbol")] <- ""
 
 no_mutation_expression_data <- recast(dropped_WT, Hugo_Symbol ~ Patient.ID, id.var = 1:2)
 no_mutation_expression_data <- no_mutation_expression_data[-1, ]
+removed_no_mutation_expression_data <- no_mutation_expression_data
+colnames(removed_no_mutation_expression_data)[which(names(removed_no_mutation_expression_data)
+                                                 == "Hugo_Symbol")] <- ""
 
-write.csv(mutant_expression_data, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
-write.csv(no_mutation_expression_data, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(removed_mutation_expression_data, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(removed_no_mutation_expression_data, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
 
 
 
 ### Enrichment Analysis ###
-setwd("~/DataShare/TCGA_RNA_Analysis/Input/gsva_correct_format/")
 
-no_MT_data <- read.csv("total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", header = T)
-MT_data <- read.csv("total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", header = F)
+# Import Expression Data
+## Make into 'Data Matrix' for GSVA
+setwd("~/DataShare/TCGA_RNA_Analysis/Input/gsva_correct_format/")
+no_MT_data <- read.csv("total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", header = T, row.names = 1)
+MT_data <- read.csv("total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", header = T, row.names = 1)
+
+no_MT_data_matrix <- as.matrix(no_MT_data)
+MT_data_matrix <- as.matrix(MT_data)
+
+# Import Gene Set (GMT Text Format, save an Excel doc as .txt)
+setwd("H:/My Documents/R_WD/stunning-fiesta/R_scripts/Gene_Sets/th17_enhanced_geneset")
+th17_geneset_gmt <- getGmt("th17_enhanced_geneset_gmt.txt")
+
+# Run the test
+## At the moment am doing GSVA and SSGSEA until Boris advise
+setwd("~/Datashare/TCGA_RNA_Analysis/Output/test_gsva_th17_enhanced_signature")
+
+gsva_no_MT_enrichment_output <- gsva(no_MT_data_matrix, th17_geneset_gmt, method = "gsva")
+gsva_MT_enrichment_output <- gsva(MT_data_matrix, th17_geneset_gmt, method = "gsva")
+
+write.csv(gsva_no_MT_enrichment_output, "no_mut_gsva_output.csv", row.names = T)
+write.csv(gsva_MT_enrichment_output, "mut_gsva_output.csv", row.names = T)
+
+ssgsea_no_MT_enrichment_output <- gsva(no_MT_data_matrix, th17_geneset_gmt, method = "ssgsea")
+ssgsea_MT_enrichment_output <- gsva(MT_data_matrix, th17_geneset_gmt, method = "ssgsea")
+
+write.csv(ssgsea_no_MT_enrichment_output, "no_mut_ssgsea_output.csv", row.names = T)
+write.csv(ssgsea_MT_enrichment_output, "mut_ssgsea_output.csv", row.names = T)
+

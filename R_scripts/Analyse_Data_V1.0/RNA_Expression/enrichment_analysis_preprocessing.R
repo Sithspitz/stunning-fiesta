@@ -56,14 +56,21 @@ dropped_WT <- WT_extra[!duplicated(WT_extra$extra), ]
 dropped_Mut$extra <- NULL
 dropped_WT$extra <- NULL
 
-# Recast, remove the uneeded first row and export the total MT vs Other MT Data
+# Recast, remove the uneeded first row and the 'Hugo_Symbol' label 
+# Export the total MT vs Other MT Data
 setwd("~/DataShare/TCGA_RNA_Analysis/Input/gsva_correct_format/")
 
 mutant_expression_data <- recast(dropped_Mut, Hugo_Symbol ~ Patient.ID, id.var = 1:2)
 mutant_expression_data <- mutant_expression_data[-1, ]
+removed_mutation_expression_data <- mutant_expression_data
+colnames(removed_mutation_expression_data)[which(names(removed_mutation_expression_data)
+                                                 == "Hugo_Symbol")] <- ""
 
 no_mutation_expression_data <- recast(dropped_WT, Hugo_Symbol ~ Patient.ID, id.var = 1:2)
 no_mutation_expression_data <- no_mutation_expression_data[-1, ]
+removed_no_mutation_expression_data <- no_mutation_expression_data
+colnames(removed_no_mutation_expression_data)[which(names(removed_no_mutation_expression_data)
+                                                    == "Hugo_Symbol")] <- ""
 
-write.csv(mutant_expression_data, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
-write.csv(no_mutation_expression_data, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(removed_mutation_expression_data, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(removed_no_mutation_expression_data, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
