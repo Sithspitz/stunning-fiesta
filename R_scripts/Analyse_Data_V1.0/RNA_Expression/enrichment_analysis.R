@@ -2,7 +2,7 @@
 ### Should be adopted dependent on the analysis in question ###
 
 mypackages <- c("GSEABase", "GSVA", "Biobase", "genefilter",
-                "limma", "RColorBrewer", "GSVAdata", "scales")
+                "limma", "RColorBrewer", "GSVAdata", "scales", "dplyr")
 lapply(mypackages, library, character.only = T)
 source("./R_scripts/Functions/functions.R")
 

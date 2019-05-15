@@ -1,7 +1,7 @@
 #### Lung Adenocarcinoma PanCancer Atlas RNA Enrichment Pre-Processing ####
 ### Is the scripts from 'enrichment_analysis.R' but on their own ###
 mypackages <- c("GSEABase", "GSVA", "Biobase", "genefilter",
-                "limma", "RColorBrewer", "GSVAdata")
+                "limma", "RColorBrewer", "GSVAdata", "dplyr")
 lapply(mypackages, library, character.only = T)
 source("./R_scripts/Functions/functions.R")
 
