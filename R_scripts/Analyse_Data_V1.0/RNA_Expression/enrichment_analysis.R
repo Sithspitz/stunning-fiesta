@@ -109,3 +109,56 @@ ssgsea_MT_enrichment_output <- gsva(MT_data_matrix, th17_geneset_gmt, method = "
 write.csv(ssgsea_no_MT_enrichment_output, "no_mut_ssgsea_output.csv", row.names = T)
 write.csv(ssgsea_MT_enrichment_output, "mut_ssgsea_output.csv", row.names = T)
 
+# Unionise Enrichment Output Data 
+
+gsva_no_MT_enrichment_transposed <- as.data.frame(t(gsva_no_MT_enrichment_output))
+gsva_no_MT_enrichment_transposed["mutation"] <- paste("WT")
+
+gsva_MT_enrichment_output_transposed <- as.data.frame(t(gsva_MT_enrichment_output))
+gsva_MT_enrichment_output_transposed["mutation"] <- paste("MT")
+
+gsva_union <- union(gsva_no_MT_enrichment_transposed, gsva_MT_enrichment_output_transposed)
+
+ssgsea_no_MT_enrichment_transposed <- as.data.frame(t(ssgsea_no_MT_enrichment_output))
+ssgsea_no_MT_enrichment_transposed["mutation"] <- paste("WT")
+
+ssgsea_MT_enrichment_transposed <- as.data.frame(t(ssgsea_MT_enrichment_output))
+ssgsea_MT_enrichment_transposed["mutation"] <- paste("MT")
+
+ssgsea_union <- union(ssgsea_no_MT_enrichment_transposed, ssgsea_MT_enrichment_transposed)
+
+setwd("~/Datashare/TCGA_RNA_Analysis/Output/test_gsva_th17_enhanced_signature")
+write.csv(gsva_union, "gsva_union_output.csv", row.names = F)
+write.csv(ssgsea_union, "ssgsea_union_output.csv", row.names = F)
+
+
+
+### Stats Comparison and Plotting ###
+
+# Subset if needed
+## Can use the example script on the following line
+### gsva_no_mt_subset <- subset(gsva_no_MT_enrichment_output, rownames(gsva_MT_enrichment_output) %in% "Th17_Genes")
+
+# Wilcox Test
+stat_result_gsva_output <- wilcox.test(gsva_no_MT_enrichment_output, gsva_MT_enrichment_output)
+stat_result_ssgsea_output <- wilcox.test(ssgsea_no_MT_enrichment_output, ssgsea_MT_enrichment_output)
+stat_result_gsva_output
+stat_result_ssgsea_output
+
+pVal_1_gsva <- wilcox.test(gsva_no_MT_enrichment_output, gsva_MT_enrichment_output)$p.value
+pVal_2_gsva <- format(round(pVal_1_gsva, 4), nsmall = 4)
+pVal_3_gsva <- paste("p = ", pVal_2_gsva, sep = "")
+
+pVal_1_ssgsea <- wilcox.test(ssgsea_no_MT_enrichment_output, ssgsea_MT_enrichment_output)$p.value
+pVal_2_ssgsea <- format(round(pVal_1_ssgsea, 4), nsmall = 4)
+pVal_3_ssgsea <- paste("p = ", pVal_2_ssgsea, sep = "")
+
+# GSVA Violin Plot
+
+
+
+
+
+
+
+
