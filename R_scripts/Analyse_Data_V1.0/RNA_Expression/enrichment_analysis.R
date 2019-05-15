@@ -2,7 +2,7 @@
 ### Should be adopted dependent on the analysis in question ###
 
 mypackages <- c("GSEABase", "GSVA", "Biobase", "genefilter",
-                "limma", "RColorBrewer", "GSVAdata")
+                "limma", "RColorBrewer", "GSVAdata", "scales")
 lapply(mypackages, library, character.only = T)
 source("./R_scripts/Functions/functions.R")
 
@@ -154,11 +154,61 @@ pVal_2_ssgsea <- format(round(pVal_1_ssgsea, 4), nsmall = 4)
 pVal_3_ssgsea <- paste("p = ", pVal_2_ssgsea, sep = "")
 
 # GSVA Violin Plot
+setwd("~/Datashare/TCGA_RNA_Analysis/Output/test_gsva_th17_enhanced_signature")
+cbcols <- c("WT" = "#0000FF",
+            "MT" = "#FF0000")
 
+gsva_union$mutation <-factor(gsva_union$mutation, levels = c("WT", "MT"))
+my_comparisons <- list(c("WT", "MT"))
 
+cairo_pdf("./gsva_violin.pdf")
+violin_1 <- ggplot(gsva_union, aes(x = mutation, y = Th17_Genes)) +
+  geom_boxplot(alpha = 0.5, width = 0.2) + 
+  geom_violin(trim = F, aes(mutation, fill = mutation),
+              scale = "width", alpha = 0.6) +
+  geom_dotplot(binaxis = "y", stackdir = "center", 
+               dotsize = 0.5, color = "Black", fill = "Black") +
+  scale_fill_manual(values = cbcols) +
+  labs(x = "Mutational Subtype", y = "GSVA Enrichment Score") +
+  theme_bw() +
+  theme(axis.text = element_text(size = 16)) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  theme(legend.position = "none") + 
+  ggtitle("GSVA Enrichment of Th17 Enhanced Gene Signature") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_compare_means(comparisons = my_comparisons,
+                     label = "p.signif", method = "wilcox.test") +
+  annotate("text", label = pVal_3_gsva, x = 2.4, y = -0.4, size = 4)
+violin_1
+dev.off()
+# Button to delete the violin file: unlink("gsva_violin.pdf")
 
+# SSGSEA Violin Plot
+setwd("~/Datashare/TCGA_RNA_Analysis/Output/test_gsva_th17_enhanced_signature")
+cbcols <- c("WT" = "#0000FF",
+            "MT" = "#FF0000")
 
+ssgsea_union$mutation <-factor(ssgsea_union$mutation, levels = c("WT", "MT"))
+my_comparisons <- list(c("WT", "MT"))
 
-
-
+cairo_pdf("./ssgsea_violin.pdf")
+violin_1 <- ggplot(ssgsea_union, aes(x = mutation, y = Th17_Genes)) +
+  geom_boxplot(alpha = 0.5, width = 0.2) + 
+  geom_violin(trim = F, aes(mutation, fill = mutation),
+              scale = "width", alpha = 0.6) +
+  geom_dotplot(binaxis = "y", stackdir = "center", 
+               dotsize = 0.5, color = "Black", fill = "Black") +
+  scale_fill_manual(values = cbcols) +
+  labs(x = "Mutational Subtype", y = "SSGSEA Enrichment Score") +
+  theme_bw() +
+  theme(axis.text = element_text(size = 16)) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  theme(legend.position = "none") + 
+  ggtitle("SSGSEA Enrichment of Th17 Enhanced Gene Signature") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_compare_means(comparisons = my_comparisons,
+                     label = "p.signif", method = "wilcox.test") +
+  annotate("text", label = pVal_3_ssgsea, x = 2.4, y = -0.2, size = 4)
+violin_1
+dev.off()
 
