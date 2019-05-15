@@ -109,6 +109,12 @@ ssgsea_MT_enrichment_output <- gsva(MT_data_matrix, th17_geneset_gmt, method = "
 write.csv(ssgsea_no_MT_enrichment_output, "no_mut_ssgsea_output.csv", row.names = T)
 write.csv(ssgsea_MT_enrichment_output, "mut_ssgsea_output.csv", row.names = T)
 
+plage_no_MT_enrichment_output <- gsva(no_MT_data_matrix, th17_geneset_gmt, method = "plage")
+plage_MT_enrichment_output <- gsva(MT_data_matrix, th17_geneset_gmt, method = "plage")
+
+write.csv(plage_no_MT_enrichment_output, "no_mut_plage_output.csv", row.names = T)
+write.csv(plage_MT_enrichment_output, "mut_plage_output.csv", row.names = T)
+
 # Unionise Enrichment Output Data 
 
 gsva_no_MT_enrichment_transposed <- as.data.frame(t(gsva_no_MT_enrichment_output))
@@ -127,10 +133,18 @@ ssgsea_MT_enrichment_transposed["mutation"] <- paste("MT")
 
 ssgsea_union <- union(ssgsea_no_MT_enrichment_transposed, ssgsea_MT_enrichment_transposed)
 
-setwd("~/Datashare/TCGA_RNA_Analysis/Output/test_gsva_th17_enhanced_signature")
-write.csv(gsva_union, "gsva_union_output.csv", row.names = F)
-write.csv(ssgsea_union, "ssgsea_union_output.csv", row.names = F)
+plage_no_MT_enrichment_transposed <- as.data.frame(t(plage_no_MT_enrichment_output))
+plage_no_MT_enrichment_transposed["mutation"] <- paste("WT")
 
+plage_MT_enrichment_output_transposed <- as.data.frame(t(plage_MT_enrichment_output))
+plage_MT_enrichment_output_transposed["mutation"] <- paste("MT")
+
+plage_union <- union(plage_no_MT_enrichment_transposed, plage_MT_enrichment_output_transposed)
+
+setwd("~/Datashare/TCGA_RNA_Analysis/Output/test_gsva_th17_enhanced_signature")
+write.csv(plage_union, "plage_union_output.csv", row.names = F)
+write.csv(ssgsea_union, "ssgsea_union_output.csv", row.names = F)
+write.csv(gsva_union, "gsva_union_output.csv", row.names = F)
 
 
 ### Stats Comparison and Plotting ###
@@ -142,8 +156,10 @@ write.csv(ssgsea_union, "ssgsea_union_output.csv", row.names = F)
 # Wilcox Test
 stat_result_gsva_output <- wilcox.test(gsva_no_MT_enrichment_output, gsva_MT_enrichment_output)
 stat_result_ssgsea_output <- wilcox.test(ssgsea_no_MT_enrichment_output, ssgsea_MT_enrichment_output)
+stat_result_plage_output <- wilcox.test(plage_no_MT_enrichment_output, plage_MT_enrichment_output)
 stat_result_gsva_output
 stat_result_ssgsea_output
+stat_result_plage_output
 
 pVal_1_gsva <- wilcox.test(gsva_no_MT_enrichment_output, gsva_MT_enrichment_output)$p.value
 pVal_2_gsva <- format(round(pVal_1_gsva, 4), nsmall = 4)
@@ -152,6 +168,10 @@ pVal_3_gsva <- paste("p = ", pVal_2_gsva, sep = "")
 pVal_1_ssgsea <- wilcox.test(ssgsea_no_MT_enrichment_output, ssgsea_MT_enrichment_output)$p.value
 pVal_2_ssgsea <- format(round(pVal_1_ssgsea, 4), nsmall = 4)
 pVal_3_ssgsea <- paste("p = ", pVal_2_ssgsea, sep = "")
+
+pVal_1_plage <- wilcox.test(plage_no_MT_enrichment_output, plage_MT_enrichment_output)$p.value
+pVal_2_plage <- format(round(pVal_1_plage, 4), nsmall = 4)
+pVal_3_plage <- paste("p = ", pVal_2_plage, sep = "")
 
 # GSVA Violin Plot
 setwd("~/Datashare/TCGA_RNA_Analysis/Output/test_gsva_th17_enhanced_signature")
@@ -209,6 +229,35 @@ violin_1 <- ggplot(ssgsea_union, aes(x = mutation, y = Th17_Genes)) +
   stat_compare_means(comparisons = my_comparisons,
                      label = "p.signif", method = "wilcox.test") +
   annotate("text", label = pVal_3_ssgsea, x = 2.4, y = -0.2, size = 4)
+violin_1
+dev.off()
+
+# Plage Violin Plot
+setwd("~/Datashare/TCGA_RNA_Analysis/Output/test_gsva_th17_enhanced_signature")
+cbcols <- c("WT" = "#0000FF",
+            "MT" = "#FF0000")
+
+plage_union$mutation <-factor(plage_union$mutation, levels = c("WT", "MT"))
+my_comparisons <- list(c("WT", "MT"))
+
+cairo_pdf("./plage_violin.pdf")
+violin_1 <- ggplot(plage_union, aes(x = mutation, y = Th17_Genes)) +
+  geom_boxplot(alpha = 0.5, width = 0.2) + 
+  geom_violin(trim = F, aes(mutation, fill = mutation),
+              scale = "width", alpha = 0.6) +
+  geom_dotplot(binaxis = "y", stackdir = "center", 
+               dotsize = 0.5, color = "Black", fill = "Black") +
+  scale_fill_manual(values = cbcols) +
+  labs(x = "Mutational Subtype", y = "plage Enrichment Score") +
+  theme_bw() +
+  theme(axis.text = element_text(size = 16)) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  theme(legend.position = "none") + 
+  ggtitle("plage Enrichment of Th17 Enhanced Gene Signature") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_compare_means(comparisons = my_comparisons,
+                     label = "p.signif", method = "wilcox.test") +
+  annotate("text", label = pVal_3_plage, x = 2.4, y = -0.4, size = 4)
 violin_1
 dev.off()
 
