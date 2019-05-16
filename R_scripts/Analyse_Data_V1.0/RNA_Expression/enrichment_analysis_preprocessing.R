@@ -1,7 +1,7 @@
 #### Lung Adenocarcinoma PanCancer Atlas RNA Enrichment Pre-Processing ####
 ### Is the scripts from 'enrichment_analysis.R' but on their own ###
 mypackages <- c("GSEABase", "GSVA", "Biobase", "genefilter",
-                "limma", "RColorBrewer", "GSVAdata", "dplyr")
+                "limma", "RColorBrewer", "GSVAdata", "scales", "dplyr")
 lapply(mypackages, library, character.only = T)
 source("./R_scripts/Functions/functions.R")
 
@@ -27,6 +27,7 @@ Intermediate4$DataType <- NULL
 Intermediate5 <- Intermediate4
 
 # Subset just the Mut and the WT and drop the Mutation_Status column
+## Or just leave it and use the entire dataset 
 my_Mut_subset <- droplevels(subset(Intermediate5, Mutation_Status == "Mut"))
 my_WT_subset <- droplevels(subset(Intermediate5, Mutation_Status == "Other_Mut"))
 my_Mut_subset2 <- my_Mut_subset
@@ -34,6 +35,7 @@ my_WT_subset2 <- my_WT_subset
 
 my_Mut_subset2$Mutation_Status <- NULL
 my_WT_subset2$Mutation_Status <- NULL
+Intermediate5$Mutation_Status <- NULL
 
 # Data wrangling to the correct format #
 
@@ -44,17 +46,22 @@ my_WT_subset3 <- my_WT_subset2
 dofactor <- c("Patient.ID", "Hugo_Symbol")
 Mut_factored <- factorthese(my_Mut_subset3, dofactor)
 WT_factored <- factorthese(my_WT_subset3, dofactor)
+Intermediate6 <- factorthese(Intermediate5, dofactor)
 
 # Removing duplicate values (including Hugo Symbol blanks) from the dataset 
 Mut_extra <- Mut_factored
 WT_extra <- WT_factored
+Inter_extra <- Intermediate6
 Mut_extra$extra <- as.factor(paste(Mut_extra$Patient.ID, Mut_extra$Hugo_Symbol, sep = ","))
 WT_extra$extra <- as.factor(paste(WT_extra$Patient.ID, WT_extra$Hugo_Symbol, sep = ","))
+Inter_extra$extra <- as.factor(paste(Inter_extra$Patient.ID, Inter_extra$Hugo_Symbol, sep = ","))
 
 dropped_Mut <- Mut_extra[!duplicated(Mut_extra$extra), ]
 dropped_WT <- WT_extra[!duplicated(WT_extra$extra), ]
+dropped_Inter <- Inter_extra[!duplicated(Inter_extra$extra), ]
 dropped_Mut$extra <- NULL
 dropped_WT$extra <- NULL
+dropped_Inter$extra <- NULL
 
 # Recast, remove the uneeded first row and the 'Hugo_Symbol' label 
 # Export the total MT vs Other MT Data
@@ -72,5 +79,12 @@ removed_no_mutation_expression_data <- no_mutation_expression_data
 colnames(removed_no_mutation_expression_data)[which(names(removed_no_mutation_expression_data)
                                                     == "Hugo_Symbol")] <- ""
 
+inter_expression_data <- recast(dropped_Inter, Hugo_Symbol ~ Patient.ID, id.var = 1:2)
+inter_expression_data <- inter_expression_data[-1, ]
+removed_inter_expression_data <- inter_expression_data
+colnames(removed_inter_expression_data)[which(names(removed_inter_expression_data) == "Hugo_Symbol")] <- ""
+
 write.csv(removed_mutation_expression_data, "total_STK11_and_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
 write.csv(removed_no_mutation_expression_data, "total_no_STK11_or_KRAS_MT_rna_seq_EL_expression_data.csv", row.names = F)
+write.csv(removed_inter_expression_data, "total_rna_seq_EL_expression_data.csv" , row.names = F)
+
