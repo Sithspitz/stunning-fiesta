@@ -1,0 +1,7 @@
+Notes_On_Enrichment_Scripts
+
+enrichment_analysis.R is the master script for analysis.
+
+enrichment_analysis_preprocessing.R is a script for just pre-processing, adoped from enrichment_analysis.R but in a friendly easy to read version.
+
+th17_enrichment_analysis.R is a an applied enrichment script, easy to adopt to what I want to do.

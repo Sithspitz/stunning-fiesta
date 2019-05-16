@@ -1,5 +1,6 @@
 #### Lung Adenocarcinoma PanCancer Atlas RNA Enrichment ####
 ### Should be adopted dependent on the analysis in question ###
+## For a functional example of these scripts look at th17_enrichment_analysis.R ##
 
 mypackages <- c("GSEABase", "GSVA", "Biobase", "genefilter",
                 "limma", "RColorBrewer", "GSVAdata", "scales", "dplyr")
