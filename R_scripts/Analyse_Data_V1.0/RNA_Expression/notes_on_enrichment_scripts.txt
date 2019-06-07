@@ -4,4 +4,8 @@ enrichment_analysis.R is the master script for analysis.
 
 enrichment_analysis_preprocessing.R is a script for just pre-processing, adoped from enrichment_analysis.R but in a friendly easy to read version.
 
-th17_enrichment_analysis.R is a an applied enrichment script, easy to adopt to what I want to do.
+In the applied_scripts folder there are the following scripts:
+
+- th17_enrichment_analysis.R is a an applied enrichment script, easy to adopt to what I want to do.
+
+- hallmark_enrichment_analysis.R is another applied script that is good for high throughput enrichment analyses, using a loop to identify signficantly altered pathways quickly.
