@@ -67,6 +67,11 @@ for (i in 1:nrow(df2)) {
   if(wil_tested$p.value <=0.05) {
     kras_output[length(kras_output)+1] <- rownames(data_names[i, ])
     kras_output[length(kras_output)+1] <- wil_tested$p.value
+    if(median(df2[i,37:154]) > median(df2[i,155:469])) {
+    kras_output[length(kras_output)+1] <- print("Up")
+    } else {
+    kras_output[length(kras_output)+1] <- print("Down")
+  }
   }
 }
 
@@ -82,6 +87,11 @@ for (i in 1:nrow(df2)) {
   if(wil_tested$p.value <=0.05) {
     stk11_output[length(stk11_output)+1] <- rownames(data_names[i, ])
     stk11_output[length(stk11_output)+1] <- wil_tested$p.value
+    if(median(df2[i,470:506]) > median(df2[i,155:469])) {
+      stk11_output[length(stk11_output)+1] <- print("Up")
+    } else {
+      stk11_output[length(stk11_output)+1] <- print("Down")
+    }
   }
 }
 
@@ -97,6 +107,11 @@ for (i in 1:nrow(df2)) {
   if(wil_tested$p.value <=0.05) {
     double_output[length(double_output)+1] <- rownames(data_names[i, ])
     double_output[length(double_output)+1] <- wil_tested$p.value
+    if(median(df2[i,1:36]) > median(df2[i,155:469])) {
+      double_output[length(double_output)+1] <- print("Up")
+    } else {
+      double_output[length(double_output)+1] <- print("Down")
+    }
   }
 }
 
@@ -112,6 +127,11 @@ for (i in 1:nrow(df2)) {
   if(wil_tested$p.value <=0.05) {
     total_output[length(total_output)+1] <- rownames(data_names[i, ])
     total_output[length(total_output)+1] <- wil_tested$p.value
+    if(median(df2[i,c(1:154, 470:506)]) > median(df2[i,155:469])) {
+      total_output[length(total_output)+1] <- print("Up")
+    } else {
+      total_output[length(total_output)+1] <- print("Down")
+    }
   }
 }
 
